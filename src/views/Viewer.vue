@@ -16,6 +16,7 @@ export default {
     
   },
   mounted(){
+    console.log(process.env)
     this.initThree()
   },
   methods:{
