@@ -44,7 +44,7 @@ export default {
       const gltfLoader = new GLTFLoader()
       console.log(THIS.publicPath)
       gltfLoader.load(`${THIS.publicPath}demodel/scene.gltf`, (gltf) => {
-      // gltfLoader.load(`../assets/demodel/scene.gltf`, (gltf) => {
+      // gltfLoader.load(`scene.gltf`, (gltf) => {
         let model = gltf.scene
         //遍历模型每部分
         // model.traverse((o) => {
