@@ -1,5 +1,6 @@
 <template>
   <div class="viewer">
+    <v-btn color="primary">123</v-btn>
     <canvas id="three"></canvas>
   </div>
 </template>
@@ -27,7 +28,7 @@ export default {
       const THIS = this;
       const scene = new THREE.Scene()
       scene.background = new THREE.Color('#eee')
-      scene.fog = new THREE.Fog('#eee', 20, 100)
+      // scene.fog = new THREE.Fog('#eee', 20, 100)
 
       const canvas = document.querySelector('#three')
       const renderer = new THREE.WebGLRenderer({ canvas, antialias: true })
@@ -43,8 +44,9 @@ export default {
 
       const gltfLoader = new GLTFLoader()
       console.log(THIS.publicPath)
-      gltfLoader.load(`${THIS.publicPath}demodel/scene.gltf`, (gltf) => {
-      // gltfLoader.load(`scene.gltf`, (gltf) => {
+      // gltfLoader.load(`${THIS.publicPath}civil/CV_building.gltf`, (gltf) => {
+      gltfLoader.load('CV_building.gltf', (gltf) => {
+      // gltfLoader.load(`demodel/scene.gltf`, (gltf) => {
         let model = gltf.scene
         //遍历模型每部分
         // model.traverse((o) => {
@@ -72,28 +74,28 @@ export default {
       hemLight.position.set(0, 48, 0)
       scene.add(hemLight)
 
-      const dirLight = new THREE.DirectionalLight(0xffffff, 0.6)
+      // const dirLight = new THREE.DirectionalLight(0xffffff, 0.6)
       //光源等位置
-      dirLight.position.set(2, 2, 2)
+      // dirLight.position.set(2, 2, 2)
       //可以产生阴影
-      dirLight.castShadow = true
-      dirLight.shadow.mapSize = new THREE.Vector2(1024, 1024)
-      scene.add(dirLight)
+      // dirLight.castShadow = true
+      // dirLight.shadow.mapSize = new THREE.Vector2(1024, 1024)
+      // scene.add(dirLight)
 
-      let floorGeometry = new THREE.PlaneGeometry(8000, 8000)
-      let floorMaterial = new THREE.MeshPhongMaterial({
-        color: '#ffffff',
-        shininess: 0,
-      })
+      // let floorGeometry = new THREE.PlaneGeometry(8000, 8000)
+      // let floorMaterial = new THREE.MeshPhongMaterial({
+      //   color: '#ffffff',
+      //   shininess: 0,
+      // })
 
-      let floor = new THREE.Mesh(floorGeometry, floorMaterial)
-      floor.rotation.x = -0.5 * Math.PI
-      floor.receiveShadow = true
-      floor.position.y = -3
-      scene.add(floor)
+      // let floor = new THREE.Mesh(floorGeometry, floorMaterial)
+      // floor.rotation.x = -0.5 * Math.PI
+      // floor.receiveShadow = true
+      // floor.position.y = -3
+      // scene.add(floor)
 
       const controls = new OrbitControls(camera, renderer.domElement)
-      controls.enableDamping = true
+      controls.enableDamping = false
 
       function animate() {
         controls.update()
