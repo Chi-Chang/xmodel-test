@@ -12,15 +12,19 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 
 export default {
   name: 'Viewer',
-  components: {
-    
+  components: {},
+  data(){
+    return{
+      publicPath: process.env.BASE_URL,
+    }
   },
   mounted(){
-    console.log(process.env)
+    console.log(process.env.BASE_URL)
     this.initThree()
   },
   methods:{
     initThree() {
+      const THIS = this;
       const scene = new THREE.Scene()
       scene.background = new THREE.Color('#eee')
       scene.fog = new THREE.Fog('#eee', 20, 100)
@@ -38,7 +42,8 @@ export default {
       camera.position.z = 10
 
       const gltfLoader = new GLTFLoader()
-      gltfLoader.load('/demodel/scene.gltf', (gltf) => {
+      console.log(THIS.publicPath)
+      gltfLoader.load(`${THIS.publicPath}demodel/scene.gltf`, (gltf) => {
         let model = gltf.scene
         //遍历模型每部分
         // model.traverse((o) => {
