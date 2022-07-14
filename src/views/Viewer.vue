@@ -45,7 +45,7 @@ export default {
       const gltfLoader = new GLTFLoader()
       console.log(THIS.publicPath)
       // gltfLoader.load(`${THIS.publicPath}civil/CV_building.gltf`, (gltf) => {
-      gltfLoader.load('CV_building.gltf', (gltf) => {
+      gltfLoader.load(`${THIS.publicPath}CV_building.gltf`, (gltf) => {
       // gltfLoader.load(`demodel/scene.gltf`, (gltf) => {
         let model = gltf.scene
         //遍历模型每部分
