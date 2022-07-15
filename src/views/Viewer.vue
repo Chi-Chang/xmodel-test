@@ -1,6 +1,40 @@
 <template>
   <div class="viewer">
-    <v-btn color="primary">123</v-btn>
+    <v-btn 
+      class="ma-2" 
+      color="primary" 
+      rounded 
+      depressed
+      @click="uploadModel"
+    >
+    Upload Model
+    </v-btn>
+    <v-btn 
+      class="ma-2" 
+      color="primary" 
+      rounded
+      depressed
+      @click="downloadModel"
+    >
+    Download Model
+    </v-btn>
+    <v-btn 
+      class="ma-2" 
+      color="red" 
+      rounded
+      depressed
+      dark
+      @click="clearScene"
+    >
+    Cancel
+    </v-btn>
+    <input
+      ref="uploader"
+      class="d-none"
+      type="file"
+      multiple
+      @change="onFileChanged"
+    >
     <canvas id="three"></canvas>
   </div>
 </template>
@@ -17,6 +51,9 @@ export default {
   data(){
     return{
       publicPath: process.env.BASE_URL,
+      selectedFile: null,
+      isSelecting: false,
+      scene:null,
     }
   },
   mounted(){
@@ -45,7 +82,7 @@ export default {
       const gltfLoader = new GLTFLoader()
       console.log(THIS.publicPath)
       // gltfLoader.load(`${THIS.publicPath}civil/CV_building.gltf`, (gltf) => {
-      gltfLoader.load(`${THIS.publicPath}CV_building.gltf`, (gltf) => {
+      gltfLoader.load(`${THIS.publicPath}demodel/scene.gltf`, (gltf) => {
       // gltfLoader.load(`demodel/scene.gltf`, (gltf) => {
         let model = gltf.scene
         //遍历模型每部分
@@ -68,6 +105,7 @@ export default {
         //   }
         // })
         scene.add(model)
+        THIS.scene = scene;
       })
 
       const hemLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 1)
@@ -107,6 +145,8 @@ export default {
           camera.aspect = canvas.clientWidth / canvas.clientHeight
           camera.updateProjectionMatrix()
         }
+
+        THIS.$store.dispatch("saveScene", scene);
       }
       animate()
 
@@ -124,6 +164,34 @@ export default {
         }
         return needResize
       }
+
+      // setTimeout(() => {
+      //     scene.children=[];
+      //     console.log(scene)
+      //     animate();
+      //     alert("hello")
+      //   }, 5000);
+      
+    },
+    uploadModel() {
+      
+      // this.isSelecting = true
+      // window.addEventListener('focus', () => {
+      //   this.isSelecting = false
+      // }, { once: true })
+
+      // this.$refs.uploader.click()
+    },
+    onFileChanged(e) {
+      this.selectedFile = e.target.files;
+      console.log(this.selectedFile)
+      // do something
+    },
+    downloadModel(){
+      this.scene.children = this.$store.state.scene.children;
+    },
+    clearScene(){
+      this.scene.children=[];
     },
   },
 }
