@@ -8,6 +8,11 @@ import api from "@/API/Index.js"
 Vue.prototype.$api = api;
 Vue.config.productionTip = false
 
+import threejs_functions from "@/mixins/three"
+Vue.mixin(threejs_functions);
+import system_functions from "@/mixins/system"
+Vue.mixin(system_functions);
+
 new Vue({
   router,
   store,

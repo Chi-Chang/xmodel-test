@@ -6,10 +6,16 @@ const config={
     },
  }
 export default{
-    GetModel(id){
-        return axios.get(`${api.mainBaseUrl}/Model?ID=${id}`);
+    // GetModel(id){
+    //     return axios.get(`${api.mainBaseUrl}/Model?ID=${id}`);
+    // },
+    UploadModel(data){
+        return axios.post(`${api.mainBaseUrl}/Upload/Upload`, data);
     },
-    SaveDeviceSettings(passcode, data){
-        return axios.patch(`${api.mainBaseUrl}/DevSettings/DeviceSettings?passcode=${passcode}`, data);
+    GetModel(id){
+        return axios.get(`${api.mainBaseUrl}/Upload/Download?ID=${id}`);
+    },
+    GetModelZip(id){
+        return axios.get(`${api.mainBaseUrl}/Upload/Zip?ID=${id}`);
     },
 }
