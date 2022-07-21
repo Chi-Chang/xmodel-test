@@ -16,6 +16,7 @@ export default new Vuex.Store({
     saveScene (context,data) {
       context.commit('saveScene',data)
     },
+    
   },
   modules: {
   }

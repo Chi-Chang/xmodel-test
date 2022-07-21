@@ -1,6 +1,6 @@
 <template>
   <div class="viewer">
-    <v-btn 
+    <!-- <v-btn 
       class="ma-2" 
       color="primary" 
       rounded 
@@ -27,7 +27,8 @@
       @click="clearScene"
     >
     Cancel
-    </v-btn>
+    </v-btn> -->
+    <div id="Stats-output"></div>
     <input
       ref="uploader"
       class="d-none"
@@ -42,7 +43,6 @@
 <script>
 // @ is an alias to /src
 
-
 export default {
   name: 'Viewer',
   components: {},
@@ -54,8 +54,10 @@ export default {
     }
   },
   mounted(){
-    this.initScene();
+    // this.init();
+    this._initScene();
     // window.addEventListener('mousedown', this.onDocumentMouseDown, false);
+
   },
   methods:{
     uploadModel() {
@@ -107,8 +109,8 @@ export default {
       // })
     },
     clearScene(){
-      this.threeTest();
-      this.scene.children=[];
+      // this.scene.children=[];
+      this.destroy();
     },
   },
 }
