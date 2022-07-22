@@ -1,5 +1,5 @@
 <template>
-  <div class="viewer">
+  <div id="viewer" class="viewer">
     <!-- <v-btn 
       class="ma-2" 
       color="primary" 
@@ -36,6 +36,7 @@
       multiple
       @change="onFileChanged"
     >
+    <div id="view-helper"></div>
     <canvas id="three"></canvas>
   </div>
 </template>
@@ -54,9 +55,7 @@ export default {
     }
   },
   mounted(){
-    // this.init();
-    this._initScene();
-    // window.addEventListener('mousedown', this.onDocumentMouseDown, false);
+    this.initScene();
 
   },
   methods:{
