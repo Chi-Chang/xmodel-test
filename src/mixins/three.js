@@ -40,6 +40,24 @@ export default {
                     console.log("yes")
                     this.saveModel();
                 }
+
+                if(!threeInit.transformControls) return;
+                switch (event.key) {
+                    case 'g':
+                        threeInit.transformControls.setMode('translate')
+                        break
+                    case 'r':
+                        threeInit.transformControls.setMode('rotate')
+                        break
+                    case 's':
+                        threeInit.transformControls.setMode('scale')
+                        break
+                    case 'd':
+                        console.log("delete")
+                        threeInit.scene.remove(lastSelectedObject.object.name);
+                        this.animate();
+                        break;
+                }
             // }
         })
     },
@@ -59,7 +77,7 @@ export default {
             threeInit.scene.background = new THREE.Color('#eee');
 
             // 載入輔助座標系 實際應用的時候需要註釋此程式碼
-            const axesHelper = new THREE.AxesHelper(50)
+            const axesHelper = new THREE.AxesHelper(2000)
             threeInit.scene.add(axesHelper)
 
             //New camera and setting
@@ -70,7 +88,7 @@ export default {
                 1000
             )
             threeInit.camera.position.x = -150
-            threeInit.camera.position.y = 200
+            threeInit.camera.position.y = 150
             threeInit.camera.position.z = -150
             threeInit.camera.lookAt(new THREE.Vector3(0, 0, 0))
 
@@ -121,34 +139,16 @@ export default {
 
             //New transformControls and setting
             threeInit.transformControls = new TransformControls(threeInit.camera, threeInit.renderer.domElement)
-            threeInit.scene.add(threeInit.transformControls)
-            threeInit.transformControls.addEventListener('mouseDown', function () {
-                threeInit.orbitControls.enabled = false
+            
+            threeInit.transformControls.addEventListener('mouseDown', function (e) {
+                threeInit.orbitControls.enabled = false;
+                threeInit.renderer.domElement.removeEventListener('mousedown', THIS.onDocumentMouseClick, false);
             })
-            threeInit.transformControls.addEventListener('mouseUp', function () {
-                threeInit.orbitControls.enabled = true
+            threeInit.transformControls.addEventListener('mouseUp', function (e) {
+                threeInit.orbitControls.enabled = true;
+                threeInit.renderer.domElement.addEventListener('mousedown', THIS.onDocumentMouseClick, false );
             })
             
-            window.addEventListener('keydown', event=>{
-                if(!threeInit.transformControls) return;
-                switch (event.key) {
-                    case 'g':
-                        threeInit.transformControls.setMode('translate')
-                        break
-                    case 'r':
-                        threeInit.transformControls.setMode('rotate')
-                        break
-                    case 's':
-                        threeInit.transformControls.setMode('scale')
-                        break
-                    case 'd':
-                        console.log("delete")
-                        threeInit.scene.remove(lastSelectedObject.object.name);
-                        this.animate();
-                        break;
-                }
-            })
-
 
             //New gltfLoader
             const gltfLoader = new GLTFLoader();
@@ -156,9 +156,28 @@ export default {
                 // gltfLoader.load(gltfFile ? (gltfFile) : `test/glb_test.glb`, (gltf) => {
                     // gltfLoader.load(gltfFile ? (gltfFile) : `test/gltf_test.gltf`, (gltf) => {
               let model = gltf.scene;
-              
+              console.log("model: " , model)
+            //   model.children.forEach(e=>{
+            //     const box = new THREE.Box3().setFromObject(e);
+            //     const center = box.getCenter(new THREE.Vector3(0,0,0));
+            //     console.log("center:", center);
+            //     e.position.x = center.x;
+            //     e.position.y = center.y;
+            //     e.position.z = center.z;
+            //   })
               threeInit.scene.add(model);
+              
             })
+
+
+
+            // const geometry = new THREE.BoxGeometry( 100, 100, 100 );
+            // const material = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
+            // const mesh = new THREE.Mesh( geometry, material );
+            // mesh.position.set(0, 0, 0)
+            // console.log(mesh)
+            // threeInit.scene.add( mesh );
+
 
 
             this.animate();
@@ -177,29 +196,54 @@ export default {
             threeInit.viewHelper.render(threeInit.renderer);
         },
         onDocumentMouseClick(e) {
-            let mouse = {x:0, y:0};
+            
+
+
+            let mouse = new THREE.Vector2();
             mouse.x = ( e.clientX / window.innerWidth ) * 2 - 1;
             mouse.y = - ( e.clientY / window.innerHeight ) * 2 + 1;
-
             raycaster.setFromCamera( mouse, threeInit.camera );
-            const intersects = raycaster.intersectObjects( threeInit.scene.children );
+            const targetObject = threeInit.scene.children.filter(e=>e.type=='Group');
+
+
+
+            const intersects = raycaster.intersectObjects( targetObject );
+
+
+
             if(intersects.length>0){
-                console.log(intersects[0]);
                 if(lastSelectedObject){
                     lastSelectedObject.object.material.color.set(lastSelectedObjectColor);
                     // lastSelectedObject.object.material.wireframe = false;
                 }
                 if(intersects.length>0){
                     
+                    console.log(intersects[0])
+                    const box = new THREE.Box3().setFromObject(intersects[0].object);
+                    const center = box.getCenter(new THREE.Vector3());
+                    console.log("object center:", center);
+                    console.log("object position: " , intersects[0].object.position)
+                    // intersects[0].object.position.x = center.x/2;
+                    // intersects[0].object.position.y = center.y/2;
+                    // intersects[0].object.position.z = center.z/2;
+
                     lastSelectedObject = intersects[0];
                     lastSelectedObjectColor = lastSelectedObject.object.material.color.getHex();
                     intersects[0].object.material.color.set(0x00ff00);
+
+                    threeInit.transformControls.detach();
                     threeInit.transformControls.attach(intersects[0].object)
+                    threeInit.scene.add(threeInit.transformControls)
+                    console.log(threeInit.transformControls)
                     // intersects[0].object.material.wireframe = true;
                 }
             }else{
                 lastSelectedObject.object.material.color.set(lastSelectedObjectColor);
+                threeInit.scene.remove(threeInit.transformControls)
                 return;
+            }
+            if(!targetObject){
+                threeInit.transformControls.enabled = false;
             }
         },
         saveModel(){
